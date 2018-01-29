@@ -18,8 +18,11 @@ RUN set -x \
 RUN apk add --no-cache \
   bash="4.3.42-r5" \
   build-base="0.4-r1" \
+  binutils-gold="2.26-r1" \
   git="2.8.6-r0" \
+  linux-headers="4.4.6-r1" \
   openssl="1.0.2n-r0" \
+  python="2.7.12-r0" \
   wget="1.18-r2"
 
 ENV NODENV_ROOT /opt/nodenv
