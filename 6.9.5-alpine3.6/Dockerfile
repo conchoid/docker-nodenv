@@ -34,7 +34,7 @@ RUN set -x \
   && cd ${NODENV_ROOT} && git checkout ${nodenv_version} \
   && src/configure \
   && make -C src \
-  && node_build_version="v2.6.19" \
+  && node_build_version="v3.0.0" \
   && git clone https://github.com/nodenv/node-build.git ${NODENV_ROOT}/plugins/node-build \
   && cd ${NODENV_ROOT}/plugins/node-build && git checkout ${node_build_version} \
   && npm_migrate_version="0.1.0" \
