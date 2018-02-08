@@ -1,20 +1,5 @@
 FROM node:6.9.5-alpine
 
-RUN set -x \
-  && GLIBC_PKG_VERSION="${GLIBC_PKG_VERSION:-2.26-r0}" \
-  && GLIBC_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download/$GLIBC_PKG_VERSION" \
-  && GLIBC_SSH_KEY="/etc/apk/keys/sgerrand.rsa.pub" \
-  && GLIBC_PKG_FILE="glibc-$GLIBC_PKG_VERSION.apk" \
-  && GLIBC_BIN_PKG_FILE="glibc-bin-$GLIBC_PKG_VERSION.apk" \
-  && apk add --no-cache --virtual=.fetchdeps wget ca-certificates \
-  && wget -q -O "$GLIBC_SSH_KEY" "https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub" \
-  && wget -q "$GLIBC_URL/$GLIBC_PKG_FILE" "$GLIBC_URL/$GLIBC_BIN_PKG_FILE" \
-  && apk add --no-cache "$GLIBC_PKG_FILE" "$GLIBC_BIN_PKG_FILE" \
-  && apk del .fetchdeps \
-  && rm "$GLIBC_SSH_KEY" \
-  && rm ~/.wget-hsts \
-  && rm "$GLIBC_PKG_FILE" "$GLIBC_BIN_PKG_FILE"
-
 RUN apk add --no-cache \
   bash="4.3.42-r5" \
   build-base="0.4-r1" \
