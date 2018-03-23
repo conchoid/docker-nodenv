@@ -15,6 +15,9 @@ RUN set -x \
   && rm ~/.wget-hsts \
   && rm "$GLIBC_PKG_FILE" "$GLIBC_BIN_PKG_FILE"
 
+RUN mkdir -p /var/cache/apk \
+  && ln -s /var/cache/apk /etc/apk/cache
+
 RUN apk add --no-cache \
   bash="4.3.42-r5" \
   build-base="0.4-r1" \
@@ -24,6 +27,8 @@ RUN apk add --no-cache \
   openssl="1.0.2n-r0" \
   python="2.7.12-r0" \
   wget="1.18-r2"
+
+RUN rm /etc/apk/cache
 
 ENV NODENV_ROOT /opt/nodenv
 ENV PATH "$NODENV_ROOT/shims:$NODENV_ROOT/bin:$PATH"
