@@ -19,14 +19,14 @@ RUN mkdir -p /var/cache/apk \
   && ln -s /var/cache/apk /etc/apk/cache
 
 RUN apk add --no-cache \
-  bash="4.3.42-r5" \
-  build-base="0.4-r1" \
-  binutils-gold="2.26-r1" \
-  git="2.8.6-r0" \
-  linux-headers="4.4.6-r1" \
+  bash="4.3.48-r1" \
+  build-base="0.5-r0" \
+  binutils-gold="2.28-r3" \
+  git="2.13.5-r0" \
+  linux-headers="4.4.6-r2" \
   openssl="1.0.2n-r0" \
-  python="2.7.12-r0" \
-  wget="1.18-r2"
+  python="2.7.14-r0" \
+  wget="1.19.2-r0"
 
 RUN rm /etc/apk/cache
 
