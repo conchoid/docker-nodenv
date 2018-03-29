@@ -1,4 +1,4 @@
-FROM node:8.10.0-alpine
+FROM node:8.9.4-alpine
 
 RUN set -x \
   && GLIBC_PKG_VERSION="${GLIBC_PKG_VERSION:-2.26-r0}" \
