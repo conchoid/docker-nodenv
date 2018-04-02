@@ -24,7 +24,8 @@ RUN apk add --no-cache \
   binutils-gold="2.28-r3" \
   git="2.13.5-r0" \
   linux-headers="4.4.6-r2" \
-  openssl="1.0.2n-r0" \
+  openssl="1.0.2o-r0" \
+  openssl-dev="1.0.2o-r0" \
   python="2.7.14-r0" \
   wget="1.19.2-r0"
 
