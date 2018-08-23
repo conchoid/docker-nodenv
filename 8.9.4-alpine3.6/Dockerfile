@@ -7,7 +7,7 @@ RUN set -x \
   && GLIBC_PKG_FILE="glibc-$GLIBC_PKG_VERSION.apk" \
   && GLIBC_BIN_PKG_FILE="glibc-bin-$GLIBC_PKG_VERSION.apk" \
   && apk add --no-cache --virtual=.fetchdeps wget ca-certificates \
-  && wget -q -O "$GLIBC_SSH_KEY" "https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub" \
+  && wget -q -O "$GLIBC_SSH_KEY" "https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub" \
   && wget -q "$GLIBC_URL/$GLIBC_PKG_FILE" "$GLIBC_URL/$GLIBC_BIN_PKG_FILE" \
   && apk add --no-cache "$GLIBC_PKG_FILE" "$GLIBC_BIN_PKG_FILE" \
   && apk del .fetchdeps \
