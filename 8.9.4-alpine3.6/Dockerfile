@@ -26,7 +26,8 @@ RUN apk add --no-cache \
   linux-headers="4.4.6-r2" \
   openssl="1.0.2o-r0" \
   openssl-dev="1.0.2o-r0" \
-  python="2.7.14-r0" \
+  python="2.7.15-r0" \
+  python2-dev="2.7.15-r0" \
   wget="1.19.2-r0"
 
 RUN rm /etc/apk/cache
