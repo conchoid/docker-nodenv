@@ -1,4 +1,4 @@
-FROM node:12.14.1-stretch-slim
+FROM node:12.18.3-stretch-slim
 
 # Preset locale to en_US.UTF-8
 # https://docs.docker.com/samples/library/debian/#locales
@@ -23,14 +23,14 @@ ENV NODENV_ROOT /opt/nodenv
 ENV PATH "$NODENV_ROOT/shims:$NODENV_ROOT/bin:$PATH"
 
 # Install nodenv
-RUN nodenv_version="v1.3.1" \
+RUN nodenv_version="v1.4.0" \
   && git clone https://github.com/nodenv/nodenv.git ${NODENV_ROOT} \
   && cd ${NODENV_ROOT} && git checkout ${nodenv_version} \
   && src/configure && make -C src \
-  && node_build_version="b4ec27b0e8569e20a03aa73a0b83a8fac7bc790f" \
+  && node_build_version="v4.9.7" \
   && git clone https://github.com/nodenv/node-build.git ${NODENV_ROOT}/plugins/node-build \
   && cd ${NODENV_ROOT}/plugins/node-build && git checkout ${node_build_version} \
-  && node_build_jxcore_version="v1.0.1" \
+  && node_build_jxcore_version="1b6cdf343b767e77b9f1522d5c9fa111c5373794" \
   && git clone https://github.com/nodenv/node-build-jxcore.git $(nodenv root)/plugins/node-build-jxcore \
   && cd $(nodenv root)/plugins/node-build-jxcore && git checkout ${node_build_jxcore_version} \
   && npm_migrate_version="v0.1.1" \
