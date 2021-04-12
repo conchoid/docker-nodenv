@@ -22,59 +22,59 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-ENV NODENV_ROOT /opt/nodenv
-ENV PATH "$NODENV_ROOT/shims:$NODENV_ROOT/bin:$PATH"
+ENV NODENV_ROOT  /opt/nodenv
+ENV PATH "$NODENV_ROOT /shims:$NODENV_ROOT /bin:$PATH"
 
 # Install nodenv
 RUN nodenv_version="v1.4.0" \
-  && git clone https://github.com/nodenv/nodenv.git ${NODENV_ROOT} \
-  && cd ${NODENV_ROOT} && git checkout ${nodenv_version} \
+  && git clone https://github.com/nodenv/nodenv.git ${NODENV_ROOT } \
+  && cd ${NODENV_ROOT } && git checkout ${nodenv_version} \
   && src/configure && make -C src \
   && node_build_version="v4.9.7" \
-  && git clone https://github.com/nodenv/node-build.git ${NODENV_ROOT}/plugins/node-build \
-  && cd ${NODENV_ROOT}/plugins/node-build && git checkout ${node_build_version} \
+  && git clone https://github.com/nodenv/node-build.git ${NODENV_ROOT }/plugins/node-build \
+  && cd ${NODENV_ROOT }/plugins/node-build && git checkout ${node_build_version} \
   && node_build_jxcore_version="1b6cdf343b767e77b9f1522d5c9fa111c5373794" \
   && git clone https://github.com/nodenv/node-build-jxcore.git $(nodenv root)/plugins/node-build-jxcore \
   && cd $(nodenv root)/plugins/node-build-jxcore && git checkout ${node_build_jxcore_version} \
   && npm_migrate_version="v0.1.1" \
-  && git clone https://github.com/nodenv/nodenv-npm-migrate.git ${NODENV_ROOT}/plugins/nodenv-npm-migrate \
-  && cd ${NODENV_ROOT}/plugins/nodenv-npm-migrate && git checkout ${npm_migrate_version} \
-  && find ${NODENV_ROOT} -type d -name ".git" -exec rm -r "{}" \+ \
+  && git clone https://github.com/nodenv/nodenv-npm-migrate.git ${NODENV_ROOT }/plugins/nodenv-npm-migrate \
+  && cd ${NODENV_ROOT }/plugins/nodenv-npm-migrate && git checkout ${npm_migrate_version} \
+  && find ${NODENV_ROOT } -type d -name ".git" -exec rm -r "{}" \+ \
   && curl -fsSL https://github.com/nodenv/nodenv-installer/raw/master/bin/nodenv-doctor | bash \
   && nodenv install --list
 
 # Install all latest major Nodejs versions excludes older than one year since EOL.
 # https://github.com/nodejs/Release#end-of-life-releases
-ENV NODE8 "8.17.0"
-ENV NODE10 "10.22.0"
-ENV NODE12 "12.18.3"
-ENV NODE13 "13.14.0"
-ENV NODE14 "14.10.1"
-ENV PREINSTALLED_VERSIONS  "\
-${NODE8}\n\
-${NODE10}\n\
-${NODE12}\n\
-${NODE13}\n\
-${NODE14}"
+ENV ROCRO_NODE8 "8.17.0"
+ENV ROCRO_NODE10 "10.22.0"
+ENV ROCRO_NODE12 "12.18.3"
+ENV ROCRO_NODE13 "13.14.0"
+ENV ROCRO_NODE14 "14.10.1"
+ENV ROCRO_PREINSTALLED_VERSIONS  "\
+${ROCRO_NODE8}\n\
+${ROCRO_NODE10}\n\
+${ROCRO_NODE12}\n\
+${ROCRO_NODE13}\n\
+${ROCRO_NODE14}"
 
-COPY --from=node8 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${NODE8}/bin/"
-COPY --from=node10 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${NODE10}/bin/"
-COPY --from=node13 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${NODE13}/bin/"
-COPY --from=node14 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${NODE14}/bin/"
-COPY --from=node8 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${NODE8}/lib/node_modules"
-COPY --from=node10 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${NODE10}/lib/node_modules"
-COPY --from=node13 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${NODE13}/lib/node_modules"
-COPY --from=node14 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${NODE14}/lib/node_modules"
+COPY --from=node8 "/usr/local/bin/node" "${NODENV_ROOT }/versions/${ROCRO_NODE8}/bin/"
+COPY --from=node10 "/usr/local/bin/node" "${NODENV_ROOT }/versions/${ROCRO_NODE10}/bin/"
+COPY --from=node13 "/usr/local/bin/node" "${NODENV_ROOT }/versions/${ROCRO_NODE13}/bin/"
+COPY --from=node14 "/usr/local/bin/node" "${NODENV_ROOT }/versions/${ROCRO_NODE14}/bin/"
+COPY --from=node8 "/usr/local/lib/node_modules" "${NODENV_ROOT }/versions/${ROCRO_NODE8}/lib/node_modules"
+COPY --from=node10 "/usr/local/lib/node_modules" "${NODENV_ROOT }/versions/${ROCRO_NODE10}/lib/node_modules"
+COPY --from=node13 "/usr/local/lib/node_modules" "${NODENV_ROOT }/versions/${ROCRO_NODE13}/lib/node_modules"
+COPY --from=node14 "/usr/local/lib/node_modules" "${NODENV_ROOT }/versions/${ROCRO_NODE14}/lib/node_modules"
 
-RUN mkdir -p "${NODENV_ROOT}/versions/${NODE12}/bin/" "${NODENV_ROOT}/versions/${NODE12}/lib/" \
-    && cp "$(nodenv which node)" "${NODENV_ROOT}/versions/${NODE12}/bin/" \
-    && cp -R "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${NODE12}/lib/" \
-    && echo ${PREINSTALLED_VERSIONS} | while read version;do \
-      NPM_SRC="${NODENV_ROOT}/versions/${version}/lib/node_modules/npm/bin/npm-cli.js" \
-      && NPM_DST="${NODENV_ROOT}/versions/${version}/bin/npm" \
+RUN mkdir -p "${NODENV_ROOT }/versions/${ROCRO_NODE12}/bin/" "${NODENV_ROOT }/versions/${ROCRO_NODE12}/lib/" \
+    && cp "$(nodenv which node)" "${NODENV_ROOT }/versions/${ROCRO_NODE12}/bin/" \
+    && cp -R "/usr/local/lib/node_modules" "${NODENV_ROOT }/versions/${ROCRO_NODE12}/lib/" \
+    && echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
+      NPM_SRC="${NODENV_ROOT }/versions/${version}/lib/node_modules/npm/bin/npm-cli.js" \
+      && NPM_DST="${NODENV_ROOT }/versions/${version}/bin/npm" \
       # Override the shebang line of npm-cli.js to use the "node" path dynamically.
       && sed -i -E "1s/#.+/#!\/usr\/bin\/env node/" "${NPM_SRC}" \
       && ln -s -f "${NPM_SRC}" "${NPM_DST}";done \
     && nodenv rehash \
     && npm set progress false --global --quiet \
-    && [ "$(nodenv versions --bare | xargs)" = "$NODE8 $NODE10 $NODE12 $NODE13 $NODE14" ]
+    && [ "$(nodenv versions --bare | xargs)" = "$ROCRO_NODE8 $ROCRO_NODE10 $ROCRO_NODE12 $ROCRO_NODE13 $ROCRO_NODE14" ]
