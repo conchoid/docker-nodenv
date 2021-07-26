@@ -1,10 +1,12 @@
 FROM node:8.17.0-buster-slim AS node8
-FROM node:10.22.0-buster-slim AS node10
-FROM node:12.18.3-buster-slim AS node12
+FROM node:10.24.1-buster-slim AS node10
+FROM node:12.22.3-buster-slim AS node12
 FROM node:13.14.0-buster-slim AS node13
-FROM node:14.10.1-buster-slim AS node14
+FROM node:14.17.3-buster-slim AS node14
+FROM node:15.14.0-buster-slim AS node15
+FROM node:16.5.0-buster-slim AS node16
 
-FROM node:12.18.3-buster-slim
+FROM node:12.22.3-buster-slim
 
 # install build deps and set locale (Preset locale to en_US.UTF-8)
 RUN apt-get update && apt-get install -y \
@@ -46,25 +48,33 @@ RUN nodenv_version="v1.4.0" \
 # Install all latest major Nodejs versions excludes older than one year since EOL.
 # https://github.com/nodejs/Release#end-of-life-releases
 ENV ROCRO_NODE8 "8.17.0"
-ENV ROCRO_NODE10 "10.22.0"
-ENV ROCRO_NODE12 "12.18.3"
+ENV ROCRO_NODE10 "10.24.1"
+ENV ROCRO_NODE12 "12.22.3"
 ENV ROCRO_NODE13 "13.14.0"
-ENV ROCRO_NODE14 "14.10.1"
+ENV ROCRO_NODE14 "14.17.3"
+ENV ROCRO_NODE15 "15.14.0"
+ENV ROCRO_NODE16 "16.5.0"
 ENV ROCRO_PREINSTALLED_VERSIONS  "\
 ${ROCRO_NODE8}\n\
 ${ROCRO_NODE10}\n\
 ${ROCRO_NODE12}\n\
 ${ROCRO_NODE13}\n\
-${ROCRO_NODE14}"
+${ROCRO_NODE14}\n\
+${ROCRO_NODE15}\n\
+${ROCRO_NODE16}"
 
 COPY --from=node8 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE8}/bin/"
 COPY --from=node10 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE10}/bin/"
 COPY --from=node13 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE13}/bin/"
 COPY --from=node14 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE14}/bin/"
+COPY --from=node15 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE15}/bin/"
+COPY --from=node16 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE16}/bin/"
 COPY --from=node8 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE8}/lib/node_modules"
 COPY --from=node10 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE10}/lib/node_modules"
 COPY --from=node13 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE13}/lib/node_modules"
 COPY --from=node14 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE14}/lib/node_modules"
+COPY --from=node15 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE15}/lib/node_modules"
+COPY --from=node16 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE16}/lib/node_modules"
 
 RUN mkdir -p "${NODENV_ROOT}/versions/${ROCRO_NODE12}/bin/" "${NODENV_ROOT}/versions/${ROCRO_NODE12}/lib/" \
     && cp "$(nodenv which node)" "${NODENV_ROOT}/versions/${ROCRO_NODE12}/bin/" \
@@ -77,4 +87,4 @@ RUN mkdir -p "${NODENV_ROOT}/versions/${ROCRO_NODE12}/bin/" "${NODENV_ROOT}/vers
       && ln -s -f "${NPM_SRC}" "${NPM_DST}";done \
     && nodenv rehash \
     && npm set progress false --global --quiet \
-    && [ "$(nodenv versions --bare | xargs)" = "$ROCRO_NODE8 $ROCRO_NODE10 $ROCRO_NODE12 $ROCRO_NODE13 $ROCRO_NODE14" ]
+    && [ "$(nodenv versions --bare | xargs)" = "$ROCRO_NODE8 $ROCRO_NODE10 $ROCRO_NODE12 $ROCRO_NODE13 $ROCRO_NODE14 $ROCRO_NODE15 $ROCRO_NODE16" ]
