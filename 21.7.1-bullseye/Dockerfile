@@ -81,6 +81,7 @@ COPY --from=node21 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCR
 RUN mkdir -p "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/" \
     && cp "$(nodenv which node)" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" \
     && cp -R "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/" \
+    && npm install -g pnpm@8.15.8 \
     && echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
       NPM_SRC="${NODENV_ROOT}/versions/${version}/lib/node_modules/npm/bin/npm-cli.js" \
       && NPM_DST="${NODENV_ROOT}/versions/${version}/bin/npm" \
