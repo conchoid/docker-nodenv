@@ -2,6 +2,7 @@
 
 ## 概要
 docker-nodenv/24.2.0-bookworm/Dockerfileのベースイメージを `node:X.X.X-bookworm-slim` (Debian 12) から `node:X.X.X-trixie-slim` (Debian 13) に更新する。
+システムのデフォルトのnode versionは 最新のLTSとする。(https://nodejs.org/ja/about/previous-releases)
 
 ## 更新手順
 
