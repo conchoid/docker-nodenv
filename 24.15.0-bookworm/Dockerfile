@@ -1,11 +1,11 @@
 FROM node:18.20.8-bookworm-slim AS node18
-FROM node:20.20.1-bookworm-slim AS node20
-FROM node:22.22.1-bookworm-slim AS node22
+FROM node:20.20.2-bookworm-slim AS node20
+FROM node:22.22.2-bookworm-slim AS node22
 FROM node:23.11.1-bookworm-slim AS node23
-FROM node:24.13.0-bookworm-slim AS node24
-FROM node:25.8.1-bookworm-slim AS node25
+FROM node:24.15.0-bookworm-slim AS node24
+FROM node:25.9.0-bookworm-slim AS node25
 
-FROM node:24.13.0-bookworm-slim
+FROM node:24.15.0-bookworm-slim
 
 # install build deps and set locale (Preset locale to en_US.UTF-8)
 RUN apt-get update && apt-get install -y \
@@ -32,7 +32,7 @@ ENV PATH="$NODENV_ROOT/shims:$NODENV_ROOT/bin:$PATH"
 RUN nodenv_version="v1.6.2" \
   && git clone https://github.com/nodenv/nodenv.git ${NODENV_ROOT} \
   && cd ${NODENV_ROOT} && git checkout ${nodenv_version} \
-  && node_build_version="v5.4.30" \
+  && node_build_version="v5.4.34" \
   && git clone https://github.com/nodenv/node-build.git ${NODENV_ROOT}/plugins/node-build \
   && cd ${NODENV_ROOT}/plugins/node-build && git checkout ${node_build_version} \
   && git clone https://github.com/nodenv/node-build-jxcore.git $(nodenv root)/plugins/node-build-jxcore \
@@ -49,11 +49,12 @@ RUN nodenv_version="v1.6.2" \
 # https://github.com/nodejs/Release#end-of-life-releases
 
 ENV ROCRO_NODE18=18.20.8
-ENV ROCRO_NODE20=20.20.1
-ENV ROCRO_NODE22=22.22.1
+ENV ROCRO_NODE20=20.20.2
+ENV ROCRO_NODE22=22.22.2
 ENV ROCRO_NODE23=23.11.1
-ENV ROCRO_NODE24=24.13.0
-ENV ROCRO_NODE25=25.8.1
+ENV ROCRO_NODE24=24.15.0
+ENV ROCRO_NODE25=25.9.0
+
 ENV ROCRO_PREINSTALLED_VERSIONS="\
 ${ROCRO_NODE18}\n\
 ${ROCRO_NODE20}\n\
@@ -80,7 +81,7 @@ RUN mkdir -p "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" "${NODENV_ROOT}/vers
     && cp "$(nodenv which node)" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" \
     && cp -R "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/" \
     && echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
-      npm install -g pnpm@10.12.1 \
+      npm install -g pnpm@10.33.0 \
       && NPM_SRC="${NODENV_ROOT}/versions/${version}/lib/node_modules/npm/bin/npm-cli.js" \
       && NPM_DST="${NODENV_ROOT}/versions/${version}/bin/npm" \
       # Override the shebang line of npm-cli.js to use the "node" path dynamically.
