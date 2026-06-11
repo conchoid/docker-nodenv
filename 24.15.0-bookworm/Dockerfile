@@ -1,3 +1,4 @@
+# Docker Hub: conchoid/docker-nodenv:v1.6.2-1-24.15.0-bookworm
 FROM node:18.20.8-bookworm-slim AS node18
 FROM node:20.20.2-bookworm-slim AS node20
 FROM node:22.22.2-bookworm-slim AS node22

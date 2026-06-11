@@ -1,3 +1,4 @@
+# Docker Hub: conchoid/docker-nodenv:v1.5.0-1-22.5.0-bullseye
 FROM node:18.20.3-bullseye-slim AS node18
 FROM node:20.17.0-bullseye-slim AS node20
 FROM node:21.7.3-bullseye-slim AS node21
