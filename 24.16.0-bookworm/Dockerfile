@@ -1,18 +1,20 @@
-# Docker Hub: conchoid/docker-nodenv:v1.6.2-1-24.15.0-bookworm
+# Docker Hub: conchoid/docker-nodenv:v1.6.2-1-24.16.0-bookworm
 FROM node:18.20.8-bookworm-slim AS node18
 FROM node:20.20.2-bookworm-slim AS node20
-FROM node:22.22.2-bookworm-slim AS node22
+FROM node:22.22.3-bookworm-slim AS node22
 FROM node:23.11.1-bookworm-slim AS node23
-FROM node:24.15.0-bookworm-slim AS node24
+FROM node:24.16.0-bookworm-slim AS node24
 FROM node:25.9.0-bookworm-slim AS node25
 
-FROM node:24.15.0-bookworm-slim
+FROM node:24.16.0-bookworm-slim
 
 # install build deps and set locale (Preset locale to en_US.UTF-8)
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
+      ca-certificates \
       curl \
       git \
       git-lfs \
+      libatomic1 \
       libsecret-1-dev \
       libx11-dev \
       libxkbfile-dev \
@@ -33,7 +35,7 @@ ENV PATH="$NODENV_ROOT/shims:$NODENV_ROOT/bin:$PATH"
 RUN nodenv_version="v1.6.2" \
   && git clone https://github.com/nodenv/nodenv.git ${NODENV_ROOT} \
   && cd ${NODENV_ROOT} && git checkout ${nodenv_version} \
-  && node_build_version="v5.4.34" \
+  && node_build_version="v5.4.42" \
   && git clone https://github.com/nodenv/node-build.git ${NODENV_ROOT}/plugins/node-build \
   && cd ${NODENV_ROOT}/plugins/node-build && git checkout ${node_build_version} \
   && git clone https://github.com/nodenv/node-build-jxcore.git $(nodenv root)/plugins/node-build-jxcore \
@@ -51,9 +53,9 @@ RUN nodenv_version="v1.6.2" \
 
 ENV ROCRO_NODE18=18.20.8
 ENV ROCRO_NODE20=20.20.2
-ENV ROCRO_NODE22=22.22.2
+ENV ROCRO_NODE22=22.22.3
 ENV ROCRO_NODE23=23.11.1
-ENV ROCRO_NODE24=24.15.0
+ENV ROCRO_NODE24=24.16.0
 ENV ROCRO_NODE25=25.9.0
 
 ENV ROCRO_PREINSTALLED_VERSIONS="\
@@ -82,12 +84,26 @@ RUN mkdir -p "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" "${NODENV_ROOT}/vers
     && cp "$(nodenv which node)" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" \
     && cp -R "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/" \
     && echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
-      npm install -g pnpm@10.33.0 \
+      npm install -g pnpm@11.6.0 \
       && NPM_SRC="${NODENV_ROOT}/versions/${version}/lib/node_modules/npm/bin/npm-cli.js" \
       && NPM_DST="${NODENV_ROOT}/versions/${version}/bin/npm" \
-      # Override the shebang line of npm-cli.js to use the "node" path dynamically.
+      # Update npm to latest if compatible (npm 11+ requires Node 20.17+ or 22.9+), otherwise update to latest supported major.
+      && if "${NODENV_ROOT}/versions/${version}/bin/node" -e "const v=process.version.slice(1).split('.').map(Number); process.exit((v[0]>20 || (v[0]===20 && (v[1]>17 || (v[1]===17 && v[2]>=0)))) || (v[0]===22 && v[1]>=9) ? 0 : 1)"; then \
+           "${NODENV_ROOT}/versions/${version}/bin/node" "${NPM_SRC}" install -g npm@latest; \
+         else \
+           "${NODENV_ROOT}/versions/${version}/bin/node" "${NPM_SRC}" install -g npm@10; \
+         fi \
       && sed -i -E "1s/#.+/#!\/usr\/bin\/env node/" "${NPM_SRC}" \
       && ln -s -f "${NPM_SRC}" "${NPM_DST}";done \
     && nodenv rehash \
     && npm set progress false --global --quiet \
     && [ "$(nodenv versions --bare | xargs)" = "$ROCRO_NODE18 $ROCRO_NODE20 $ROCRO_NODE22 $ROCRO_NODE23 $ROCRO_NODE24 $ROCRO_NODE25" ]
+
+
+RUN groupadd --system nodenv \
+    && useradd --system --create-home --gid nodenv --shell /bin/bash nodenv \
+    && chown -R nodenv:nodenv "${NODENV_ROOT}"
+
+ENV HOME=/home/nodenv
+
+USER nodenv
