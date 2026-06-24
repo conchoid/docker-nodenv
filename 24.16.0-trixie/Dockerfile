@@ -13,7 +13,6 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
       ca-certificates \
       curl \
       git \
-      git-lfs \
       libatomic1 \
       libsecret-1-dev \
       libx11-dev \
@@ -23,6 +22,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
       pkg-config \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+
+COPY --from=conchoid/debian:trixie-slim /usr/local/bin/git-lfs /usr/local/bin/git-lfs
+RUN git lfs install
 
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
@@ -98,11 +100,3 @@ RUN mkdir -p "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" "${NODENV_ROOT}/vers
     && nodenv rehash \
     && npm set progress false --global --quiet \
     && [ "$(nodenv versions --bare | xargs)" = "$ROCRO_NODE18 $ROCRO_NODE20 $ROCRO_NODE22 $ROCRO_NODE23 $ROCRO_NODE24 $ROCRO_NODE25" ]
-
-RUN groupadd --system nodenv \
-    && useradd --system --create-home --gid nodenv --shell /bin/bash nodenv \
-    && chown -R nodenv:nodenv "${NODENV_ROOT}"
-
-ENV HOME=/home/nodenv
-
-USER nodenv
