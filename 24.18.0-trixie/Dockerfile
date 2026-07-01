@@ -1,4 +1,4 @@
-# Docker Hub: conchoid/docker-nodenv:v1.6.2-2-24.18.0-trixie
+# Docker Hub: conchoid/docker-nodenv:v1.6.2-3-24.18.0-trixie
 FROM node:20.20.2-trixie-slim AS node20
 FROM node:22.23.1-trixie-slim AS node22
 FROM node:24.18.0-trixie-slim AS node24
@@ -78,10 +78,7 @@ COPY --from=node24 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCR
 COPY --from=node25 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE25}/lib/node_modules"
 COPY --from=node26 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE26}/lib/node_modules"
 
-RUN mkdir -p "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/" \
-    && cp "$(nodenv which node)" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" \
-    && cp -R "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/" \
-    && echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
+RUN echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
       npm install -g pnpm@11.6.0 \
       && NPM_SRC="${NODENV_ROOT}/versions/${version}/lib/node_modules/npm/bin/npm-cli.js" \
       && NPM_DST="${NODENV_ROOT}/versions/${version}/bin/npm" \

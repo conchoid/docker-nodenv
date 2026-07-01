@@ -1,4 +1,4 @@
-# Docker Hub: conchoid/docker-nodenv:v1.6.2-1-24.16.0-bookworm
+# Docker Hub: conchoid/docker-nodenv:v1.6.2-2-24.16.0-bookworm
 FROM node:18.20.8-bookworm-slim AS node18
 FROM node:20.20.2-bookworm-slim AS node20
 FROM node:22.22.3-bookworm-slim AS node22
@@ -82,10 +82,7 @@ COPY --from=node23 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCR
 COPY --from=node24 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE24}/lib/node_modules"
 COPY --from=node25 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE25}/lib/node_modules"
 
-RUN mkdir -p "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/" \
-    && cp "$(nodenv which node)" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/" \
-    && cp -R "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/" \
-    && echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
+RUN echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
       npm install -g pnpm@11.6.0 \
       && NPM_SRC="${NODENV_ROOT}/versions/${version}/lib/node_modules/npm/bin/npm-cli.js" \
       && NPM_DST="${NODENV_ROOT}/versions/${version}/bin/npm" \
