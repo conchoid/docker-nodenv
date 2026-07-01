@@ -1,4 +1,4 @@
-# Docker Hub: conchoid/docker-nodenv:v1.6.2-3-24.18.0-trixie
+# Docker Hub: conchoid/docker-nodenv:v1.6.2-1-24.18.0-trixie
 FROM node:20.20.2-trixie-slim AS node20
 FROM node:22.23.1-trixie-slim AS node22
 FROM node:24.18.0-trixie-slim AS node24
