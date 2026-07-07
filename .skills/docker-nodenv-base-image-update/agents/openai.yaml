@@ -1,7 +1,0 @@
-interface:
-  display_name: "Docker Nodenv Base Image Update"
-  short_description: "docker-nodenv の Debian 系更新手順"
-  default_prompt: "Use $docker-nodenv-base-image-update to update docker-nodenv for a new Debian release and verify the default Node.js LTS selection."
-
-policy:
-  allow_implicit_invocation: true
