@@ -1,12 +1,9 @@
-# Docker Hub: conchoid/docker-nodenv:v1.6.2-2-24.16.0-bookworm
-FROM node:18.20.8-bookworm-slim AS node18
-FROM node:20.20.2-bookworm-slim AS node20
-FROM node:22.22.3-bookworm-slim AS node22
-FROM node:23.11.1-bookworm-slim AS node23
-FROM node:24.16.0-bookworm-slim AS node24
-FROM node:25.9.0-bookworm-slim AS node25
+# Docker Hub: conchoid/docker-nodenv:v1.6.2-2-24.18.0-trixie-arm64
+FROM node:22.23.1-trixie-slim AS node22
+FROM node:24.18.0-trixie-slim AS node24
+FROM node:26.4.0-trixie-slim AS node26
 
-FROM node:24.16.0-bookworm-slim
+FROM node:24.18.0-trixie-slim
 
 # install build deps and set locale (Preset locale to en_US.UTF-8)
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
@@ -23,7 +20,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-COPY --from=conchoid/debian:trixie-slim /usr/local/bin/git-lfs /usr/local/bin/git-lfs
+COPY --from=conchoid/debian:trixie-slim-arm64 /usr/local/bin/git-lfs /usr/local/bin/git-lfs
 RUN git lfs install
 
 ENV LANG=en_US.UTF-8
@@ -37,7 +34,7 @@ ENV PATH="$NODENV_ROOT/shims:$NODENV_ROOT/bin:$PATH"
 RUN nodenv_version="v1.6.2" \
   && git clone https://github.com/nodenv/nodenv.git ${NODENV_ROOT} \
   && cd ${NODENV_ROOT} && git checkout ${nodenv_version} \
-  && node_build_version="v5.4.42" \
+  && node_build_version="v5.4.44" \
   && git clone https://github.com/nodenv/node-build.git ${NODENV_ROOT}/plugins/node-build \
   && cd ${NODENV_ROOT}/plugins/node-build && git checkout ${node_build_version} \
   && git clone https://github.com/nodenv/node-build-jxcore.git $(nodenv root)/plugins/node-build-jxcore \
@@ -53,34 +50,23 @@ RUN nodenv_version="v1.6.2" \
 # Install all latest major Nodejs versions excludes older than one year since EOL.
 # https://github.com/nodejs/Release#end-of-life-releases
 
-ENV ROCRO_NODE18=18.20.8
-ENV ROCRO_NODE20=20.20.2
-ENV ROCRO_NODE22=22.22.3
-ENV ROCRO_NODE23=23.11.1
-ENV ROCRO_NODE24=24.16.0
-ENV ROCRO_NODE25=25.9.0
+
+ENV ROCRO_NODE22=22.23.1
+ENV ROCRO_NODE24=24.18.0
+ENV ROCRO_NODE26=26.4.0
 
 ENV ROCRO_PREINSTALLED_VERSIONS="\
-${ROCRO_NODE18}\n\
-${ROCRO_NODE20}\n\
 ${ROCRO_NODE22}\n\
-${ROCRO_NODE23}\n\
 ${ROCRO_NODE24}\n\
-${ROCRO_NODE25}"
+${ROCRO_NODE26}"
 
-COPY --from=node18 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE18}/bin/"
-COPY --from=node20 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/"
 COPY --from=node22 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE22}/bin/"
-COPY --from=node23 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE23}/bin/"
 COPY --from=node24 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE24}/bin/"
-COPY --from=node25 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE25}/bin/"
+COPY --from=node26 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE26}/bin/"
 
-COPY --from=node18 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE18}/lib/node_modules"
-COPY --from=node20 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/node_modules"
 COPY --from=node22 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE22}/lib/node_modules"
-COPY --from=node23 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE23}/lib/node_modules"
 COPY --from=node24 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE24}/lib/node_modules"
-COPY --from=node25 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE25}/lib/node_modules"
+COPY --from=node26 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE26}/lib/node_modules"
 
 RUN echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
       npm install -g pnpm@11.6.0 \
@@ -96,4 +82,4 @@ RUN echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
       && ln -s -f "${NPM_SRC}" "${NPM_DST}";done \
     && nodenv rehash \
     && npm set progress false --global --quiet \
-    && [ "$(nodenv versions --bare | xargs)" = "$ROCRO_NODE18 $ROCRO_NODE20 $ROCRO_NODE22 $ROCRO_NODE23 $ROCRO_NODE24 $ROCRO_NODE25" ]
+    && [ "$(nodenv versions --bare | xargs)" = "$ROCRO_NODE22 $ROCRO_NODE24 $ROCRO_NODE26" ]
