@@ -1,8 +1,6 @@
-# Docker Hub: conchoid/docker-nodenv:v1.6.2-1-24.18.0-trixie-arm64
-FROM node:20.20.2-trixie-slim AS node20
+# Docker Hub: conchoid/docker-nodenv:v1.6.2-2-24.18.0-trixie-arm64
 FROM node:22.23.1-trixie-slim AS node22
 FROM node:24.18.0-trixie-slim AS node24
-FROM node:25.9.0-trixie-slim AS node25
 FROM node:26.4.0-trixie-slim AS node26
 
 FROM node:24.18.0-trixie-slim
@@ -53,29 +51,21 @@ RUN nodenv_version="v1.6.2" \
 # https://github.com/nodejs/Release#end-of-life-releases
 
 
-ENV ROCRO_NODE20=20.20.2
 ENV ROCRO_NODE22=22.23.1
 ENV ROCRO_NODE24=24.18.0
-ENV ROCRO_NODE25=25.9.0
 ENV ROCRO_NODE26=26.4.0
 
 ENV ROCRO_PREINSTALLED_VERSIONS="\
-${ROCRO_NODE20}\n\
 ${ROCRO_NODE22}\n\
 ${ROCRO_NODE24}\n\
-${ROCRO_NODE25}\n\
 ${ROCRO_NODE26}"
 
-COPY --from=node20 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/bin/"
 COPY --from=node22 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE22}/bin/"
 COPY --from=node24 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE24}/bin/"
-COPY --from=node25 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE25}/bin/"
 COPY --from=node26 "/usr/local/bin/node" "${NODENV_ROOT}/versions/${ROCRO_NODE26}/bin/"
 
-COPY --from=node20 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE20}/lib/node_modules"
 COPY --from=node22 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE22}/lib/node_modules"
 COPY --from=node24 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE24}/lib/node_modules"
-COPY --from=node25 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE25}/lib/node_modules"
 COPY --from=node26 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE26}/lib/node_modules"
 
 RUN echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
@@ -92,4 +82,4 @@ RUN echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
       && ln -s -f "${NPM_SRC}" "${NPM_DST}";done \
     && nodenv rehash \
     && npm set progress false --global --quiet \
-    && [ "$(nodenv versions --bare | xargs)" = "$ROCRO_NODE20 $ROCRO_NODE22 $ROCRO_NODE24 $ROCRO_NODE25 $ROCRO_NODE26" ]
+    && [ "$(nodenv versions --bare | xargs)" = "$ROCRO_NODE22 $ROCRO_NODE24 $ROCRO_NODE26" ]
