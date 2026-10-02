@@ -8,6 +8,7 @@ FROM node:24.21.0-trixie-slim
 # install build deps and set locale (Preset locale to en_US.UTF-8)
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
       ca-certificates \
+      connect-proxy \
       curl \
       git \
       libatomic1 \
