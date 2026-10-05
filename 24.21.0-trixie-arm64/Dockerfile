@@ -1,13 +1,14 @@
-# Docker Hub: conchoid/docker-nodenv:v1.6.2-2-24.18.0-trixie-arm64
-FROM node:22.23.1-trixie-slim AS node22
-FROM node:24.18.0-trixie-slim AS node24
-FROM node:26.4.0-trixie-slim AS node26
+# Docker Hub: conchoid/docker-nodenv:v1.6.2-1-24.21.0-trixie-arm64
+FROM node:22.23.3-trixie-slim AS node22
+FROM node:24.21.0-trixie-slim AS node24
+FROM node:26.10.0-trixie-slim AS node26
 
-FROM node:24.18.0-trixie-slim
+FROM node:24.21.0-trixie-slim
 
 # install build deps and set locale (Preset locale to en_US.UTF-8)
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
       ca-certificates \
+      connect-proxy \
       curl \
       git \
       libatomic1 \
@@ -20,7 +21,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-COPY --from=conchoid/debian:trixie-slim-arm64 /usr/local/bin/git-lfs /usr/local/bin/git-lfs
+COPY --from=conchoid/debian:trixie-2-slim-arm64 /usr/local/bin/git-lfs /usr/local/bin/git-lfs
 RUN git lfs install
 
 ENV LANG=en_US.UTF-8
@@ -34,7 +35,7 @@ ENV PATH="$NODENV_ROOT/shims:$NODENV_ROOT/bin:$PATH"
 RUN nodenv_version="v1.6.2" \
   && git clone https://github.com/nodenv/nodenv.git ${NODENV_ROOT} \
   && cd ${NODENV_ROOT} && git checkout ${nodenv_version} \
-  && node_build_version="v5.4.44" \
+  && node_build_version="v5.4.56" \
   && git clone https://github.com/nodenv/node-build.git ${NODENV_ROOT}/plugins/node-build \
   && cd ${NODENV_ROOT}/plugins/node-build && git checkout ${node_build_version} \
   && git clone https://github.com/nodenv/node-build-jxcore.git $(nodenv root)/plugins/node-build-jxcore \
@@ -51,9 +52,9 @@ RUN nodenv_version="v1.6.2" \
 # https://github.com/nodejs/Release#end-of-life-releases
 
 
-ENV ROCRO_NODE22=22.23.1
-ENV ROCRO_NODE24=24.18.0
-ENV ROCRO_NODE26=26.4.0
+ENV ROCRO_NODE22=22.23.3
+ENV ROCRO_NODE24=24.21.0
+ENV ROCRO_NODE26=26.10.0
 
 ENV ROCRO_PREINSTALLED_VERSIONS="\
 ${ROCRO_NODE22}\n\
@@ -69,7 +70,7 @@ COPY --from=node24 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCR
 COPY --from=node26 "/usr/local/lib/node_modules" "${NODENV_ROOT}/versions/${ROCRO_NODE26}/lib/node_modules"
 
 RUN echo ${ROCRO_PREINSTALLED_VERSIONS} | while read version;do \
-      npm install -g pnpm@11.6.0 \
+      npm install -g pnpm@12.8.1 \
       && NPM_SRC="${NODENV_ROOT}/versions/${version}/lib/node_modules/npm/bin/npm-cli.js" \
       && NPM_DST="${NODENV_ROOT}/versions/${version}/bin/npm" \
       # Update npm to latest if compatible (npm 11+ requires Node 20.17+ or 22.9+), otherwise update to latest supported major.
