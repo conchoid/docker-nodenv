@@ -1,4 +1,12 @@
 # Docker Hub: conchoid/docker-nodenv:v1.6.2-1-24.22.1-trixie
+# Multi-architecture image (linux/amd64, linux/arm64). Build with buildx, see README.md.
+ARG TARGETARCH
+
+# conchoid/debian publishes per-architecture tags; select the one matching the target platform.
+FROM conchoid/debian:trixie-2-slim AS git-lfs-amd64
+FROM conchoid/debian:trixie-2-slim-arm64 AS git-lfs-arm64
+FROM git-lfs-${TARGETARCH} AS git-lfs
+
 FROM node:22.23.4-trixie-slim AS node22
 FROM node:24.22.1-trixie-slim AS node24
 FROM node:26.12.1-trixie-slim AS node26
@@ -21,7 +29,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 
-COPY --from=conchoid/debian:trixie-2-slim /usr/local/bin/git-lfs /usr/local/bin/git-lfs
+COPY --from=git-lfs /usr/local/bin/git-lfs /usr/local/bin/git-lfs
 RUN git lfs install
 
 ENV LANG=en_US.UTF-8
